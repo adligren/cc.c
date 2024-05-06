@@ -1,0 +1,10 @@
+schema_directory=schema
+default=dev
+
+[environment.dev]
+endpoint=localhost
+database=ccc
+
+[endpoint.localhost]
+secret=secret
+url=http://localhost:8443

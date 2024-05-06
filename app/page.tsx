@@ -1,6 +1,22 @@
+'use client';
+
+import { useEffect } from "react";
 import Image from "next/image";
+import { useCandidateStore } from "./stores/Candidates";
 
 export default function Home() {
+  const candidateStream = useCandidateStore(state => state.stream);
+  const candidates = useCandidateStore(state => state.candidates);
+
+  console.log("Candidates:", candidates);
+
+  useEffect(() => {
+    candidateStream.start();
+    return function cleanUp() {
+      candidateStream.close();
+    };
+  }, [candidateStream]);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">

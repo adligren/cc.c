@@ -2,16 +2,16 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, connect to a database. The easiest setup is to connect with the public faunadb by creating a .env file and add:
+
+```bash
+NEXT_PUBLIC_FAUNA_KEY=fnAFgrog7CAAys3nLBA865JqJ1NNzIZWj4fhmRh9
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

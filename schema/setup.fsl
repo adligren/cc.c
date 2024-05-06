@@ -1,0 +1,21 @@
+collection Step {
+  history_days 0
+}
+
+collection Candidate {
+  unique [.email]
+  history_days 0
+  index byStepId {
+    terms [.stepId]
+    values [.ts]
+  }
+}
+
+role WebClient {
+
+  privileges Candidate {
+    read
+    write
+    create
+  }
+}
