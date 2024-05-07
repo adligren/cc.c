@@ -65,12 +65,13 @@ export const useCandidateStore = create<CandidateStoreType>()((set) => {
     }));
   };
 
-  const updateCandidate = (candidate: CandidateType, silent?: boolean) => {
+  const updateCandidate = async (candidate: CandidateType, silent?: boolean) => {
     if (!silent) {
       const safeCandidateData = getCandidateData(candidate);
-      client.query(
+      const res = await client.query<CandidateType>(
         fql`Candidate.byId(${candidate.id})!.update(${safeCandidateData})`
       );
+      candidate = res.data;
     }
     set((state) => ({
       candidates: replace(state.candidates, candidate),

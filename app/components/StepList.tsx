@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCandidateStore } from "../stores/Candidates";
 import CandidateCard from "./CandidateCard";
 import CandidateModal from "./CandidateModal";
 import { Button } from "@headlessui/react";
-import { createNewCandidate } from "../utils";
+import { ItemTypes, createNewCandidate } from "../utils";
 import GlobalFilter from "./GlobalFilter";
 import usePreferences from "../stores/Preferences";
+import { DndProvider, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 type StepListPropType = {
   steps: StepType[];
@@ -26,15 +28,17 @@ const StepList = (props: StepListPropType) => {
   }, [candidateStream]);
 
   return (
-    <div className="my-3">
-      <GlobalFilter />
-      <div className="flex justify-between gap-3 my-3">
-        {steps.map((step) => (
-          <Step key={step.id} step={step} />
-        ))}
+    <DndProvider backend={HTML5Backend}>
+      <div className="my-3">
+        <GlobalFilter />
+        <div className="flex justify-between gap-3 my-3">
+          {steps.map((step) => (
+            <Step key={step.id} step={step} />
+          ))}
+        </div>
+        <CandidateModal />
       </div>
-      <CandidateModal />
-    </div>
+    </DndProvider>
   );
 };
 
@@ -46,7 +50,20 @@ const Step = (props: StepPropType) => {
   const { id, label } = props.step;
   const openModal = useCandidateStore((state) => state.openModal);
   const candidates = useCandidateStore((state) => state.candidates);
+  const updateCandidate = useCandidateStore((state) => state.updateCandidate);
   const filter = usePreferences((state) => state.filter);
+  const ref = useRef<HTMLDivElement>(null);
+  const [, drop] = useDrop<CandidateType>(
+    () => ({
+      accept: ItemTypes.CARD,
+      drop: (candidate) => {
+        updateCandidate({ ...candidate, stepId: id });
+      },
+    }),
+    [id]
+  );
+
+  drop(ref);
 
   const onAddCandidate = () => {
     const candidate = createNewCandidate(id);
@@ -63,7 +80,7 @@ const Step = (props: StepPropType) => {
     ));
 
   return (
-    <div className="flex-1 min-w-52 bg-amber-300 p-3 rounded">
+    <div ref={ref} className="flex-1 min-w-52 bg-amber-300 p-3 rounded">
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-black">{label}</h1>
         <Button className="button ghost" onClick={onAddCandidate}>

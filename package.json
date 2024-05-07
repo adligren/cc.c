@@ -13,6 +13,8 @@
     "fauna": "^1.4.0-beta.0",
     "next": "14.2.3",
     "react": "^18",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
     "zustand": "^4.5.2"
   },
