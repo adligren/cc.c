@@ -55,7 +55,7 @@ const CandidateModal = () => {
   return (
     <Dialog open={open} onClose={closeModal}>
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-        <DialogPanel className="max-w-lg space-y-8 shadow bg-amber-100 rounded-2xl p-12">
+        <DialogPanel className="max-w-lg space-y-8 modal-container p-12">
           <DialogTitle className="font-bold">{title}</DialogTitle>
           <Description>
             Update the information and share with everyone.

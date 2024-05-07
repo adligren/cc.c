@@ -32,8 +32,8 @@ const StepList = (props: StepListPropType) => {
       <div className="my-3">
         <GlobalFilter />
         <div className="flex justify-between gap-3 my-3">
-          {steps.map((step) => (
-            <Step key={step.id} step={step} />
+          {steps.map((step, i) => (
+            <Step key={step.id} i={i} step={step} />
           ))}
         </div>
         <CandidateModal />
@@ -44,10 +44,12 @@ const StepList = (props: StepListPropType) => {
 
 type StepPropType = {
   step: StepType;
+  i: number;
 };
 
 const Step = (props: StepPropType) => {
-  const { id, label } = props.step;
+  const { step, i } = props;
+  const { id, label } = step;
   const openModal = useCandidateStore((state) => state.openModal);
   const candidates = useCandidateStore((state) => state.candidates);
   const updateCandidate = useCandidateStore((state) => state.updateCandidate);
@@ -80,7 +82,10 @@ const Step = (props: StepPropType) => {
     ));
 
   return (
-    <div ref={ref} className="flex-1 min-w-52 bg-amber-300 p-3 rounded">
+    <div
+      ref={ref}
+      className="flex-1 min-w-52 p-3 rounded card-container"
+    >
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-black">{label}</h1>
         <Button className="button ghost" onClick={onAddCandidate}>
