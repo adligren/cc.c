@@ -3,7 +3,6 @@ collection Step {
 }
 
 collection Candidate {
-  unique [.email]
   history_days 0
   index byStepId {
     terms [.stepId]
@@ -12,10 +11,15 @@ collection Candidate {
 }
 
 role WebClient {
+  
+  privileges Step {
+    read
+  }
 
   privileges Candidate {
     read
     write
     create
+    delete
   }
 }

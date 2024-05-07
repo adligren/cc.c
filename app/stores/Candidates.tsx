@@ -1,6 +1,6 @@
 import { Client, StreamClient, StreamToken, fql } from "fauna";
 import { create } from "zustand";
-import { append, remove, replace } from "../utils";
+import { append, getCandidateData, remove, replace } from "../utils";
 
 type StreamResponseType = {
   initialCandidates: {
@@ -12,9 +12,12 @@ type StreamResponseType = {
 type CandidateStoreType = {
   candidates: CandidateType[];
   stream: { start: () => void; close: () => void };
-  addCandidate: (candidate: CandidateType, silent: boolean) => void;
-  updateCandidate: (candidate: CandidateType, silent: boolean) => void;
-  removeCandidate: (candidateId: string, silent: boolean) => void;
+  modalCandidate: Partial<CandidateType> | null;
+  openModal: (candidate: Partial<CandidateType>) => void;
+  closeModal: () => void;
+  addCandidate: (candidate: Partial<CandidateType>, silent?: boolean) => void;
+  updateCandidate: (candidate: CandidateType, silent?: boolean) => void;
+  removeCandidate: (candidateId: string, silent?: boolean) => void;
 };
 
 export const useCandidateStore = create<CandidateStoreType>()((set) => {
@@ -36,32 +39,47 @@ export const useCandidateStore = create<CandidateStoreType>()((set) => {
   };
   refreshStream();
 
-  const addCandidate = (candidate: CandidateType, silent: boolean) => {
+  const openModal = (candidate: Partial<CandidateType>) => {
+    set({ modalCandidate: candidate });
+  };
+
+  const closeModal = () => {
+    set({ modalCandidate: null });
+  };
+
+  const addCandidate = async (
+    candidate: Partial<CandidateType>,
+    silent?: boolean
+  ) => {
     if (!silent) {
-        console.log("Push candidate:", candidate);
-        fql`Candidates.create(${candidate})`;
+      const safeCandidateData = getCandidateData(candidate);
+      const res = await client.query<CandidateType>(
+        fql`Candidate.create(${safeCandidateData})`
+      );
+      candidate = res.data;
     }
     set((state) => ({
       candidates: state.candidates.every(({ id }) => id !== candidate.id)
-        ? append(state.candidates, candidate)
-        : replace(state.candidates, candidate),
+        ? append(state.candidates, candidate as CandidateType)
+        : replace(state.candidates, candidate as CandidateType),
     }));
   };
 
-  const updateCandidate = (candidate: CandidateType, silent: boolean) => {
+  const updateCandidate = (candidate: CandidateType, silent?: boolean) => {
     if (!silent) {
-        console.log("Push candidate edit:", candidate);
-        fql`Candidates.byId(${candidate.id}).update(${candidate})`;
+      const safeCandidateData = getCandidateData(candidate);
+      client.query(
+        fql`Candidate.byId(${candidate.id})!.update(${safeCandidateData})`
+      );
     }
     set((state) => ({
       candidates: replace(state.candidates, candidate),
     }));
   };
 
-  const removeCandidate = (candidateId: string, silent: boolean) => {
+  const removeCandidate = (candidateId: string, silent?: boolean) => {
     if (!silent) {
-        console.log("Remove candidate:", candidateId);
-        fql`Candidates.byId(${candidateId}).delete()`;
+      client.query(fql`Candidate.byId(${candidateId})!.delete()`);
     }
     set((state) => ({
       candidates: remove(state.candidates, candidateId),
@@ -72,11 +90,9 @@ export const useCandidateStore = create<CandidateStoreType>()((set) => {
     candidates: [],
     stream: {
       start: async () => {
-        console.log("Start stream");
         if (stream === null || stream.closed) await refreshStream();
         try {
           for await (const event of stream as StreamClient<CandidateType>) {
-            console.log("Stream event:", event);
             switch (event.type) {
               case "update":
                 updateCandidate(event.data, true);
@@ -96,10 +112,12 @@ export const useCandidateStore = create<CandidateStoreType>()((set) => {
         }
       },
       close: () => {
-        console.log("Close stream");
         if (stream !== null && !stream.closed) stream.close();
       },
     },
+    modalCandidate: null,
+    openModal,
+    closeModal,
     addCandidate,
     updateCandidate,
     removeCandidate,
