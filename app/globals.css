@@ -4,7 +4,7 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
+  --background-start-rgb: 244, 249, 240;
   --background-end-rgb: 255, 255, 255;
 }
 
@@ -26,16 +26,23 @@ body {
     @apply font-semibold text-xs block text-gray-500;
   }
   .button {
-    @apply inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white;
+    @apply inline-flex items-center rounded-md  py-1.5 px-3 text-sm/6 text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-[left_-1rem_top] bg-[length:calc(100%+1rem)] focus:ring-2 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium;
     &.ghost {
-      @apply bg-transparent text-gray-700 shadow-none;
+      @apply bg-none text-gray-700 shadow-none;
     }
   }
   .card-container {
-    @apply bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% bg-large;
+    @apply bg-gradient-blue bg-huge;
   }
   .modal-container {
-    @apply bg-zinc-100 shadow-lg rounded-xl;
+    @apply bg-whiteish shadow-lg border rounded-xl;
+  }
+  .gradient-title {
+    @apply text-3xl font-extrabold;
+    color: black;
+    background: -webkit-linear-gradient(25deg, #ff0 -100%, #f0f 150%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 

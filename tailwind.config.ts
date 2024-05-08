@@ -1,3 +1,4 @@
+import { text } from "stream/consumers";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -12,17 +13,17 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
-      backgroundPosition: {
-        'left-1': 'left -32rem',
-        'left-2': 'left -64rem',
+        "gradient-blue": "linear-gradient(to right, #6366f1 0%, #0ea5e9 15%, #2dffba 50%, #0ea5e9 85%, #6366f1 100%)",
       },
       backgroundSize: {
-        large: '64rem',
+        huge: "128rem",
+      },
+      backgroundColor: {
+        "whiteish": "rgb(244, 249, 240)",
       },
       minHeight: {
-        '128': '32rem',
-      }
+        "128": "32rem",
+      },
     },
   },
   plugins: [],

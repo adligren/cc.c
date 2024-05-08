@@ -84,7 +84,8 @@ const Step = (props: StepPropType) => {
   return (
     <div
       ref={ref}
-      className="flex-1 min-w-52 p-3 rounded card-container"
+      style={{ backgroundPosition: `left -${i * 200}px top` }}
+      className={`flex-1 min-w-52 p-3 rounded card-container`}
     >
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-black">{label}</h1>

@@ -29,7 +29,7 @@ const CandidateCard = (props: CandidatePropType) => {
   return (
     <div
       ref={ref}
-      className="bg-amber-50 rounded-2xl text-black p-3 shadow"
+      className="bg-whiteish rounded-2xl text-black p-3 shadow"
       onClick={() => openCandidateModal(candidate)}
     >
       {candidate.name}
